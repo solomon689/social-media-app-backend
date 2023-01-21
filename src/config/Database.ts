@@ -1,5 +1,7 @@
 import { DataSource } from "typeorm";
+import dotenv from "dotenv";
 
+dotenv.config();
 export class Database {
     private static instance: Database;
     private dataSource: DataSource;
@@ -16,6 +18,10 @@ export class Database {
             synchronize: true,
             logging: false,
         });
+    }
+
+    get DataSource(): DataSource {
+        return this.dataSource;
     }
 
     public static getInstance(): Database {
