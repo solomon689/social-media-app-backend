@@ -3,7 +3,7 @@ import { Security } from '../../utils/Security';
 import { Account } from './Account.entity';
 import { Repository } from 'typeorm';
 import { Database } from '../../config/Database';
-import { IAccountService } from './interfaces/IAccountService.interface';
+import { IAccountService } from '../../common/interfaces/services/IAccountService.interface';
 
 export class AccountService extends Singleton implements IAccountService {
     private constructor(
@@ -34,5 +34,11 @@ export class AccountService extends Singleton implements IAccountService {
         );
 
         return await this.accountRepository.save(newAccount);
+    }
+
+    public async findOneByEmail(email: string): Promise<Account | null> {
+        return await this.accountRepository.findOne({
+            where: { email }
+        });
     }
 }

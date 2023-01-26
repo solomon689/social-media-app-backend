@@ -1,12 +1,12 @@
 import { Repository } from "typeorm";
-import { IUserService } from "./interfaces/IUserService.interface";
+import { IUserService } from "../../common/interfaces/services/IUserService.interface";
 import { User } from './User.entity';
 import { Database } from '../../config/Database';
 import { CreateUserDto } from './dtos/UserDto';
 import { Account } from '../account/Account.entity';
 import { AccountService } from '../account/Account.service';
 import { Singleton } from '../../common/models/Singleton';
-import { IAccountService } from '../account/interfaces/IAccountService.interface';
+import { IAccountService } from '../../common/interfaces/services/IAccountService.interface';
 
 export class UserService extends Singleton implements IUserService {
     private constructor(
@@ -36,5 +36,12 @@ export class UserService extends Singleton implements IUserService {
         newUser.account = newAccount;
 
         await this.userRepository.save(newUser);
+    }
+
+    public async findOneByEmail(email: string): Promise<User | null> {
+        return await this.userRepository.findOne({
+            where: { account: { email } },
+            relations: { account: true }
+        });
     }
 }

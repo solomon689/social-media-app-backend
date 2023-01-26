@@ -3,12 +3,14 @@ import cors from "cors";
 import { Database } from './Database';
 import healthRoute from "../routes/health.routes";
 import userRoutes from "../routes/user.routes";
+import authRoutes from "../routes/auth.routes";
 
 export class ServerApp {
     private app: Application;
     private paths = {
         health: '/api/v1/health',
         user: '/api/v1/user',
+        auth: '/api/v1/auth',
     }
 
     constructor() {
@@ -25,6 +27,7 @@ export class ServerApp {
     private routes(): void {
         this.app.use(this.paths.health, healthRoute);
         this.app.use(this.paths.user, userRoutes);
+        this.app.use(this.paths.auth, authRoutes);
     }
 
     private middlewares(): void {

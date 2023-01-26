@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { HttpStatus } from '../../common/enums/HttpStatus';
-import { IUserService } from './interfaces/IUserService.interface';
+import { IUserService } from '../../common/interfaces/services/IUserService.interface';
 import { CreateUserDto } from './dtos/UserDto';
 
 export class UserController {
