@@ -24,11 +24,12 @@ export class AuthController {
                 });
             }
 
+            res.cookie("token", token, { httpOnly: true, maxAge: 86400000 });
+
             return res.status(HttpStatus.OK).json({
                 statusCode: HttpStatus.OK,
                 message: 'Login exitoso!',
                 str: 'OK',
-                token,
             });
         } catch (error) {
             console.error('Error login =>', error);

@@ -4,6 +4,7 @@ import { Database } from './Database';
 import healthRoute from "../routes/health.routes";
 import userRoutes from "../routes/user.routes";
 import authRoutes from "../routes/auth.routes";
+import cookieParser from "cookie-parser";
 
 export class ServerApp {
     private app: Application;
@@ -33,6 +34,7 @@ export class ServerApp {
     private middlewares(): void {
         this.app.use(cors());
         this.app.use(express.json());
+        this.app.use(cookieParser());
     }
 
     private async connectDB(): Promise<void> {
