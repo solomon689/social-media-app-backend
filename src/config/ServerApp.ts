@@ -4,7 +4,9 @@ import { Database } from './Database';
 import healthRoute from "../routes/health.routes";
 import userRoutes from "../routes/user.routes";
 import authRoutes from "../routes/auth.routes";
+import userProfileRoutes from "../routes/userProfile.routes";
 import cookieParser from "cookie-parser";
+import fileUpload from "express-fileupload";
 
 export class ServerApp {
     private app: Application;
@@ -12,6 +14,7 @@ export class ServerApp {
         health: '/api/v1/health',
         user: '/api/v1/user',
         auth: '/api/v1/auth',
+        userProfile: '/api/v1/user/profile'
     }
 
     constructor() {
@@ -29,12 +32,17 @@ export class ServerApp {
         this.app.use(this.paths.health, healthRoute);
         this.app.use(this.paths.user, userRoutes);
         this.app.use(this.paths.auth, authRoutes);
+        this.app.use(this.paths.userProfile, userProfileRoutes);
     }
 
     private middlewares(): void {
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(cookieParser());
+        this.app.use(fileUpload({
+            useTempFiles: true,
+            tempFileDir: 'tmp',
+        }));
     }
 
     private async connectDB(): Promise<void> {
