@@ -19,4 +19,14 @@ export namespace Security {
 
         return jwt.sign(<any>payload, jwtPassword, {expiresIn: '24h'});
     }
+
+    export const validateUserToken = (token: string) => {
+        if (!token) {
+            throw new Error('Token no enviado');
+        }
+        
+        const decoded = jwt.verify(token, process.env.JWT_PASSWORD || '') as any;
+        
+        return decoded.id;
+    }
 }

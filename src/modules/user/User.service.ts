@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import { IUserService } from "../../common/interfaces/services/IUserService.interface";
 import { User } from './User.entity';
 import { Database } from '../../config/Database';
-import { CreateUserDto } from './dtos/UserDto';
+import { CreateUserDto } from './dtos/CreateUserDto';
 import { Account } from '../account/Account.entity';
 import { AccountService } from '../account/Account.service';
 import { Singleton } from '../../common/models/Singleton';
@@ -43,5 +43,21 @@ export class UserService extends Singleton implements IUserService {
             where: { account: { email } },
             relations: { account: true }
         });
+    }
+
+    public async findOneById(userId: string): Promise<User> {
+        const userData: User | null = await this.userRepository.findOne(
+            { 
+                where: { id: userId },
+                relations: {
+                    account: true,
+                    profile: true,
+                } 
+            }
+        );
+
+        if (!userData) throw new Error('Usuario no encontrado');
+
+        return userData;
     }
 }

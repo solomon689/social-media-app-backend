@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CreateUserDto } from '../../modules/user/dtos/UserDto';
+import { CreateUserDto } from '../../modules/user/dtos/CreateUserDto';
 import { Validations } from "../../utils/validations";
 import { HttpStatus } from '../enums/HttpStatus';
 
