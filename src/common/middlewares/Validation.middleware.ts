@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { CreateUserDto } from '../../modules/user/dtos/CreateUserDto';
-import { Validations } from "../../utils/validations";
+import { Validations } from "../../utils/Validations";
 import { HttpStatus } from '../enums/HttpStatus';
 
 export class ValidationMiddleware {
