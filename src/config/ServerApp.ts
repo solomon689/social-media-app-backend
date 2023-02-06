@@ -7,9 +7,11 @@ import authRoutes from "../routes/auth.routes";
 import userProfileRoutes from "../routes/userProfile.routes";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+import { ExceptionMiddleware } from '../common/middlewares/ExceptionMiddleware';
 
 export class ServerApp {
     private app: Application;
+    private exceptionHandler: ExceptionMiddleware;
     private paths = {
         health: '/api/v1/health',
         user: '/api/v1/user',
@@ -19,6 +21,7 @@ export class ServerApp {
 
     constructor() {
         this.app = express();
+        this.exceptionHandler = new ExceptionMiddleware();
     }
 
     public async start(port: string): Promise<void> {
@@ -33,6 +36,8 @@ export class ServerApp {
         this.app.use(this.paths.user, userRoutes);
         this.app.use(this.paths.auth, authRoutes);
         this.app.use(this.paths.userProfile, userProfileRoutes);
+        this.app.use(this.exceptionHandler.errorLogger);
+        this.app.use(this.exceptionHandler.errorResponse);
     }
 
     private middlewares(): void {
