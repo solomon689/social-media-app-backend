@@ -45,7 +45,7 @@ export class UserService extends Singleton implements IUserService {
         });
     }
 
-    public async findOneById(userId: string): Promise<User> {
+    public async findOneById(userId: string): Promise<User | null> {
         const userData: User | null = await this.userRepository.findOne(
             { 
                 where: { id: userId },
@@ -55,8 +55,6 @@ export class UserService extends Singleton implements IUserService {
                 } 
             }
         );
-
-        if (!userData) throw new Error('Usuario no encontrado');
 
         return userData;
     }

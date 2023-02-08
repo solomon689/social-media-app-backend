@@ -1,11 +1,13 @@
 import cloudinary from 'cloudinary';
 import { UploadedFile } from 'express-fileupload';
+import { BadRequestException } from '../errors/BadRequestException';
 
+/* TODO: Mejorar la lógica y funcionalidades */
 export namespace Cloudinary {
     cloudinary.v2.config(process.env.CLOUDINARY_URL || '');
 
     export const uploadAvatarImage = async (avatarImage: UploadedFile, identifier?: string): Promise<string> => {
-        if (!avatarImage) throw new Error('No se ingreso una imagen para su subida');
+        if (!avatarImage) throw new BadRequestException('No se ingreso una imagen para su subida');
 
         const { secure_url } = await cloudinary.v2.uploader.upload(avatarImage.tempFilePath, {
             public_id: identifier,
@@ -22,7 +24,7 @@ export namespace Cloudinary {
     }
 
     export const uploadCoverImage = async (coverImage: UploadedFile, identifier?: string): Promise<string> => {
-        if (!coverImage) throw new Error('No se ingreso una imagen para su subida');
+        if (!coverImage) throw new BadRequestException('No se ingreso una imagen para su subida');
 
         const { secure_url } = await cloudinary.v2.uploader.upload(coverImage.tempFilePath, {
             public_id: identifier,

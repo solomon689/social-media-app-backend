@@ -1,10 +1,7 @@
 import { Singleton } from '../../common/models/Singleton';
 import { IAuthService } from '../../common/interfaces/services/IAuthService.interface';
 import { UserService } from '../user/User.service';
-import { IAccountService } from '../../common/interfaces/services/IAccountService.interface';
-import { Account } from '../account/Account.entity';
 import { Security } from '../../utils/Security';
-import { AccountService } from '../account/Account.service';
 import { IUserService } from '../../common/interfaces/services/IUserService.interface';
 import { User } from '../user/User.entity';
 
