@@ -21,8 +21,7 @@ export class User {
     @JoinColumn()
     public account!: Account;
 
-    constructor(name: string, lastname: string) {
-        this.name = name;
-        this.lastname = lastname;
+    constructor(user: User) {
+        Object.assign(this, user);
     }
 }

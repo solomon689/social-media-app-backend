@@ -7,6 +7,7 @@ import { Account } from '../account/Account.entity';
 import { AccountService } from '../account/Account.service';
 import { Singleton } from '../../common/models/Singleton';
 import { IAccountService } from '../../common/interfaces/services/IAccountService.interface';
+import { UserMapper } from '../../mapers/UserMapper';
 
 export class UserService extends Singleton implements IUserService {
     private constructor(
@@ -30,7 +31,7 @@ export class UserService extends Singleton implements IUserService {
     }
 
     public async create(user: CreateUserDto): Promise<void> {
-        const newUser: User = new User(user.name, user.lastname);
+        const newUser: User = UserMapper.createUserDtoToUserEntity(user);
         const newAccount: Account = await this.accountService.create(user.accountInfo);
 
         newUser.account = newAccount;
