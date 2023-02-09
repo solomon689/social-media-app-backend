@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
+import { BadRequestException } from '../errors/BadRequestException';
 
 export namespace Security {
     export const hashPassword = async (password: string): Promise<string> => {
@@ -22,7 +23,7 @@ export namespace Security {
 
     export const validateUserToken = (token: string) => {
         if (!token) {
-            throw new Error('Token no enviado');
+            throw new BadRequestException("Token no ingresado");
         }
         
         const decoded = jwt.verify(token, process.env.JWT_PASSWORD || '') as any;

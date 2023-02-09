@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { UploadedFile } from 'express-fileupload';
 import { HttpStatus } from '../../common/enums/HttpStatus';
 import { IUserProfileService } from '../../common/interfaces/services/IUserProfileService.interface';
@@ -10,15 +10,15 @@ export class UserProfileController {
         this.createProfile = this.createProfile.bind(this);
     }
 
-    public async createProfile(req: Request, res: Response) {
+    public async createProfile(req: Request, res: Response, next: NextFunction) {
         const userId: string = req.query.userId as string;
     
-        if (!req.files || Object.keys(req.files).length === 0) {
-            return res.status(400).send('No files were uploaded.');
-        }
+        // if (!req.files || Object.keys(req.files).length === 0) {
+        //     return res.status(400).send('No files were uploaded.');
+        // }
         
-        const avatarImage: UploadedFile = req.files.avatar as UploadedFile;
-        const coverImage: UploadedFile = req.files.avatar as UploadedFile;
+        const avatarImage: UploadedFile = req.files?.avatar as UploadedFile;
+        const coverImage: UploadedFile = req.files?.avatar as UploadedFile;
 
         try {
             const createdProfile = await this.userProfileService.create({ biography: req.body.biography, avatarImage, coverImage });
@@ -29,12 +29,7 @@ export class UserProfileController {
                 data: createdProfile,
             });
         } catch (error) {
-            console.error(error);
-
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'Ha ocurrido un error inesperado',
-            })
+            return next(error);
         }
     }    
 }

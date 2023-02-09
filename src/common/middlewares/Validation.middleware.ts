@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { CreateUserDto } from '../../modules/user/dtos/CreateUserDto';
 import { Validations } from "../../utils/Validations";
 import { HttpStatus } from '../enums/HttpStatus';
+import { BadRequestException } from '../../errors/BadRequestException';
 
 export class ValidationMiddleware {
     constructor() { }
@@ -10,21 +11,11 @@ export class ValidationMiddleware {
         const body: CreateUserDto = req.body;
         const email: string = body.accountInfo.email;
 
-        if (!email) {
-            return res.status(HttpStatus.BAD_REQUEST).json({
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Debe ingresar un correo electrónico',
-            });
-        }
+        if (!email) throw new BadRequestException("Debe ingresar un correo electrónico");
 
         const isValid: boolean = Validations.validateEmail(email);
 
-        if (!isValid) {
-            return res.status(HttpStatus.BAD_REQUEST).json({
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'El formato del correo electrónico es incorrecto'
-            });
-        }
+        if (!isValid) throw new BadRequestException("El formato del correo electrónico es incorrecto");
 
         return next();
     }
@@ -33,22 +24,11 @@ export class ValidationMiddleware {
         const body: CreateUserDto = req.body;
         const password: string = body.accountInfo.password;
 
-        if (!password) {
-            return res.status(HttpStatus.BAD_REQUEST).json({
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Debe ingresar una contraseña',
-            });
-        }
+        if (!password) throw new BadRequestException("Debe ingresar una contraseña");
 
-        if (password.length < 8) return res.status(HttpStatus.BAD_REQUEST).json({
-            statusCode: HttpStatus.BAD_REQUEST,
-            message: 'La contraseña debe tener un minímo de 8 carácteres',
-        });
+        if (password.length < 8) throw new BadRequestException("La contraseña debe tener un mínimo de 8 carácteres");
 
-        if (password.length > 16) return res.status(HttpStatus.BAD_REQUEST).json({
-            statusCode: HttpStatus.BAD_REQUEST,
-            message: 'La contraseña debe tener un maximo de 16 carácteres',
-        });
+        if (password.length > 16) throw new BadRequestException("La contraseña debe tener un maximo de 16 carácteres");
 
         return next();
     }

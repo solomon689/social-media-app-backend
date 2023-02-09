@@ -1,10 +1,12 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from 'express';
 import { id } from "../../../jest.config";
 import { HttpStatus } from '../../common/enums/HttpStatus';
 import { IUserService } from '../../common/interfaces/services/IUserService.interface';
 import { CreateUserDto } from './dtos/CreateUserDto';
 import { User } from "./User.entity";
 import { UserDto } from './dtos/UserDto';
+import { NotFoundException } from '../../errors/NotFoundException';
+import { BadRequestException } from '../../errors/BadRequestException';
 
 export class UserController {
     constructor(
@@ -14,13 +16,8 @@ export class UserController {
         this.getUserData = this.getUserData.bind(this);
     }
 
-    public async registerUser(req: Request, res: Response) {
-        if (!req.body) {
-            return res.status(HttpStatus.BAD_REQUEST).json({
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Debe ingresar la información del usuario',
-            });
-        }
+    public async registerUser(req: Request, res: Response, next: NextFunction) {
+        if (!req.body) throw new BadRequestException('Debe ingresar la información del usuario');
 
         const body: CreateUserDto = req.body;
         
@@ -32,20 +29,18 @@ export class UserController {
                 message: 'Usuario creado con exito!',
             });
         } catch (error) {
-            console.error(error);
-
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'Ha ocurrido un error inesperado al momento de la creación',
-            });
+            return next(error);
         }
     }
 
-    public async getUserData(req: Request, res: Response) {
+    public async getUserData(req: Request, res: Response, next: NextFunction) {
         const userId: string = req.body.userId;
         
         try {
-            const user: User = await this.userService.findOneById(userId);
+            const user: User | null = await this.userService.findOneById(userId);
+
+            if (!user) throw new NotFoundException('Usuario no encontrado');
+
             const userDto: UserDto = {
                 name: user.name,
                 lastname: user.lastname,
@@ -63,11 +58,7 @@ export class UserController {
                 data: userDto,
             });
         } catch (error) {
-            console.error(error);
-            return res.status(HttpStatus.NOT_FOUND).json({
-                statusCode: HttpStatus.NOT_FOUND,
-                error,
-            });
+            return next(error);
         }
     }
 }
