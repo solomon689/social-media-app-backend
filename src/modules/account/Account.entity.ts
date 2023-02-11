@@ -1,4 +1,5 @@
-import { Column, PrimaryGeneratedColumn, Entity } from 'typeorm';
+import { Column, PrimaryGeneratedColumn, Entity, DeleteDateColumn, OneToOne } from 'typeorm';
+import { User } from '../user/User.entity';
 
 @Entity('account')
 export class Account {
@@ -16,6 +17,12 @@ export class Account {
 
     @Column({ type: 'varchar', length: 10, nullable: true })
     public prefix?: string;
+
+    @DeleteDateColumn()
+    public deletedAt!: Date;
+
+    @OneToOne(() => User, (user) => user.account)
+    public user!: User;
 
     constructor(email: string, password: string, phoneNumber?: string, prefix?: string) {
         this.email = email;
