@@ -7,6 +7,7 @@ import { User } from "./User.entity";
 import { UserDto } from './dtos/UserDto';
 import { NotFoundException } from '../../errors/NotFoundException';
 import { BadRequestException } from '../../errors/BadRequestException';
+import { UserMapper } from '../../mapers/UserMapper';
 
 export class UserController {
     constructor(
@@ -14,6 +15,7 @@ export class UserController {
     ) {
         this.registerUser = this.registerUser.bind(this);
         this.getUserData = this.getUserData.bind(this);
+        this.updateUserData = this.updateUserData.bind(this);
     }
 
     public async registerUser(req: Request, res: Response, next: NextFunction) {
@@ -59,6 +61,27 @@ export class UserController {
             });
         } catch (error) {
             return next(error);
+        }
+    }
+
+    public async updateUserData(req: Request, res: Response, next: NextFunction) {
+        const userId: string = req.body.userId;
+        const userDto: Partial<CreateUserDto> = {};
+
+        try {
+            const mappedUser: Partial<User> = UserMapper.PartialCreateUserDtoToPartialUserEntity(userDto);
+
+            // TODO: Revisar como omitir el asignar userId desde el body.
+            if (!mappedUser) throw new BadRequestException('Debe ingresar información para actualizar'); 
+
+            await this.userService.updateById(userId, mappedUser);
+
+            return res.status(HttpStatus.OK).json({
+                statusCode: HttpStatus.OK,
+                message: 'Información actualizada con exito!',
+            });
+        } catch (error) {
+            next(error);
         }
     }
 }

@@ -18,4 +18,8 @@ router.get('/',
     authMiddlewares.verifyUserSession
 , userController.getUserData);
 
+router.put('/',
+    authMiddlewares.verifyUserSession
+, userController.updateUserData);
+
 export default router;

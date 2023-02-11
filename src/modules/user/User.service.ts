@@ -59,4 +59,8 @@ export class UserService extends Singleton implements IUserService {
 
         return userData;
     }
+
+    public async updateById(userId: string, newUserData: Partial<User>): Promise<any> {
+        return await this.userRepository.update({ id: userId }, newUserData);
+    }
 }
