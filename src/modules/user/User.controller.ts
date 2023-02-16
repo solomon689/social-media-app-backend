@@ -66,11 +66,11 @@ export class UserController {
 
     public async updateUserData(req: Request, res: Response, next: NextFunction) {
         const userId: string = req.body.userId;
-        const userDto: Partial<CreateUserDto> = {};
+        const userDto: Partial<CreateUserDto> = req.body;
 
         try {
             const mappedUser: Partial<User> = UserMapper.PartialCreateUserDtoToPartialUserEntity(userDto);
-
+            
             // TODO: Revisar como omitir el asignar userId desde el body.
             if (!mappedUser) throw new BadRequestException('Debe ingresar información para actualizar'); 
 

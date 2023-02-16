@@ -6,5 +6,6 @@ export interface IAccountService {
     findOneByEmail(email: string): Promise<Account | null>;
     findOneByUserId(userId: string): Promise<Account | null>;
     deleteAccount(accountId: string): Promise<UpdateResult>;
-    recoverDeletedAccount(email: string): Promise<any>;
+    recoverDeletedAccount(email: string): Promise<UpdateResult>;
+    // updateEmail(accountId: string, newEmail: string): Promise<UpdateResult>;
 }

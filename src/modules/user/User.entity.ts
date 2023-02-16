@@ -17,7 +17,7 @@ export class User {
     @JoinColumn()
     public profile!: UserProfile;
 
-    @OneToOne(() => Account)
+    @OneToOne(() => Account, { cascade: true, eager: true })
     @JoinColumn()
     public account!: Account;
 

@@ -10,4 +10,14 @@ export class AccountMapper {
             createAccountDto.prefix,
         );
     }
+
+    public static createAccountDtoToUpdateAccountEntity(createAccountDto: CreateAccountDto): Partial<Account> {
+        const { phoneNumber, prefix } = createAccountDto;
+        const mappedAccount: Partial<Account> = {
+            phoneNumber: (phoneNumber) ? phoneNumber : undefined,
+            prefix: (prefix) ? prefix : undefined,
+        }
+
+        return mappedAccount;
+    }
 }

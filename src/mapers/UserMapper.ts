@@ -20,13 +20,15 @@ export class UserMapper {
     }
 
     public static PartialCreateUserDtoToPartialUserEntity(userDto: Partial<CreateUserDto>) {
-        const mappedUser: Partial<User> = {};
-        const validProperties: string[] = ['name', 'lastname', 'profile'];
-        
-        for (const property in userDto) {
-            if (validProperties.indexOf(property) === -1) continue;
+        const { name, lastname } = userDto;
+        const mappedUser: Partial<User> = {
+            name: (name) ? name : undefined,
+            lastname: (lastname) ? lastname : undefined,
+        };
 
-            (mappedUser as any)[property] = (userDto as any)[property];    
+        if (userDto.accountInfo) {
+            const account: Partial<Account> = AccountMapper.createAccountDtoToUpdateAccountEntity(userDto.accountInfo);
+            mappedUser.account = account as Account;
         }
 
         return mappedUser;

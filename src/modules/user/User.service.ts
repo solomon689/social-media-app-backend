@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Repository, UpdateResult } from 'typeorm';
 import { IUserService } from "../../common/interfaces/services/IUserService.interface";
 import { User } from './User.entity';
 import { Database } from '../../config/Database';
@@ -8,6 +8,7 @@ import { AccountService } from '../account/Account.service';
 import { Singleton } from '../../common/models/Singleton';
 import { IAccountService } from '../../common/interfaces/services/IAccountService.interface';
 import { UserMapper } from '../../mapers/UserMapper';
+import { NotFoundException } from '../../errors/NotFoundException';
 
 export class UserService extends Singleton implements IUserService {
     private constructor(
@@ -60,7 +61,16 @@ export class UserService extends Singleton implements IUserService {
         return userData;
     }
 
-    public async updateById(userId: string, newUserData: Partial<User>): Promise<any> {
-        return await this.userRepository.update({ id: userId }, newUserData);
+    public async updateById(userId: string, newUserData: Partial<User>): Promise<User> {
+        const userExist: User | null = await this.findOneById(userId);
+
+        if (!userExist) throw new NotFoundException('El usuario que se desea actualizar no existe');
+        
+        userExist.name = newUserData.name as string;
+        userExist.lastname = newUserData.lastname as string;
+        userExist.account.phoneNumber = newUserData.account?.phoneNumber;
+        userExist.account.prefix = newUserData.account?.prefix;
+
+        return await this.userRepository.save(userExist);
     }
 }
