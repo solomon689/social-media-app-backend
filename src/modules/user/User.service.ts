@@ -62,15 +62,15 @@ export class UserService extends Singleton implements IUserService {
     }
 
     public async updateById(userId: string, newUserData: Partial<User>): Promise<User> {
-        const userExist: User | null = await this.findOneById(userId);
+        const user: User | null = await this.findOneById(userId);
 
-        if (!userExist) throw new NotFoundException('El usuario que se desea actualizar no existe');
+        if (!user) throw new NotFoundException('El usuario que se desea actualizar no existe');
         
-        userExist.name = newUserData.name as string;
-        userExist.lastname = newUserData.lastname as string;
-        userExist.account.phoneNumber = newUserData.account?.phoneNumber;
-        userExist.account.prefix = newUserData.account?.prefix;
+        user.name = newUserData.name as string;
+        user.lastname = newUserData.lastname as string;
+        user.account.phoneNumber = newUserData.account?.phoneNumber;
+        user.account.prefix = newUserData.account?.prefix;
 
-        return await this.userRepository.save(userExist);
+        return await this.userRepository.save(user);
     }
 }
