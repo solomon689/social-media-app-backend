@@ -15,4 +15,6 @@ router.delete('/',
 
 router.post('/recover', accountController.recoverDeleteAccount);
 
+router.patch('/email-update', accountController.updateEmailAccount);
+
 export default router;

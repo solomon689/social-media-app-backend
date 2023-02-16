@@ -12,6 +12,7 @@ export class AccountController {
     ) {
         this.deleteAccount = this.deleteAccount.bind(this);
         this.recoverDeleteAccount = this.recoverDeleteAccount.bind(this);
+        this.updateEmailAccount = this.updateEmailAccount.bind(this);
     }
 
     public async deleteAccount(req: Request, res: Response, next: NextFunction) {
@@ -44,6 +45,22 @@ export class AccountController {
             return res.status(HttpStatus.OK).json({
                 statusCode: HttpStatus.OK,
                 message: 'Cuenta reestablecida con exito!',
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    public async updateEmailAccount(req: Request, res: Response, next: NextFunction) {
+        const accountId: string = req.body.accountId;
+        const newEmail: string = req.body.email;
+
+        try {
+            await this.accountService.updateEmail(accountId, newEmail);
+
+            return res.status(HttpStatus.OK).json({
+                statusCode: HttpStatus.OK,
+                message: 'Correo electrónico actualizado con exito!',
             });
         } catch (error) {
             return next(error);

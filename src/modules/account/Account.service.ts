@@ -5,6 +5,7 @@ import { Repository, UpdateResult } from 'typeorm';
 import { Database } from '../../config/Database';
 import { IAccountService } from '../../common/interfaces/services/IAccountService.interface';
 import { NotFoundException } from '../../errors/NotFoundException';
+import { ConflictException } from '../../errors/ConflictException';
 
 export class AccountService extends Singleton implements IAccountService {
     private constructor(
@@ -51,6 +52,10 @@ export class AccountService extends Singleton implements IAccountService {
             .getOne();
     }
 
+    public async findOneById(accountId: string): Promise<Account | null> {
+        return await this.accountRepository.findOne({ where: { id: accountId }});
+    }
+
     public async deleteAccount(accountId: string): Promise<UpdateResult> {
         return await this.accountRepository.softDelete({
             id: accountId,
@@ -63,5 +68,18 @@ export class AccountService extends Singleton implements IAccountService {
         if (!account) throw new NotFoundException('El email no se encuentra asociado a una cuenta');
 
         return await this.accountRepository.restore({ email });
+    }
+
+    public async updateEmail(accountId: string, newEmail: string): Promise<UpdateResult> {
+        const accountExist: Account | null = await this.findOneById(accountId);
+        const emailExist: Account | null = await this.findOneByEmail(newEmail);
+
+        if (!accountExist) throw new NotFoundException('La cuenta que desea actualizar no existe');
+        if (emailExist) throw new ConflictException('El email ingresado ya se encuentra registrado');
+        
+        return await this.accountRepository.update(
+            { id: accountId },
+            { email: newEmail }
+        );
     }
 }
