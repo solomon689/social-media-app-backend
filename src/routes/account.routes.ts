@@ -15,6 +15,12 @@ router.delete('/',
 
 router.post('/recover', accountController.recoverDeleteAccount);
 
-router.patch('/email-update', accountController.updateEmailAccount);
+router.patch('/email-update', 
+    authMiddleware.verifyUserSession
+, accountController.updateEmailAccount);
+
+router.patch('/update-password',
+    authMiddleware.verifyUserSession
+, accountController.updatePasswordAccount);
 
 export default router;

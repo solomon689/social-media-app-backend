@@ -13,6 +13,7 @@ export class AccountController {
         this.deleteAccount = this.deleteAccount.bind(this);
         this.recoverDeleteAccount = this.recoverDeleteAccount.bind(this);
         this.updateEmailAccount = this.updateEmailAccount.bind(this);
+        this.updatePasswordAccount = this.updatePasswordAccount.bind(this);
     }
 
     public async deleteAccount(req: Request, res: Response, next: NextFunction) {
@@ -61,6 +62,22 @@ export class AccountController {
             return res.status(HttpStatus.OK).json({
                 statusCode: HttpStatus.OK,
                 message: 'Correo electrónico actualizado con exito!',
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    public async updatePasswordAccount(req: Request, res: Response, next: NextFunction) {
+        const accountId: string = req.body.accountId;
+        const newPassword: string = req.body.newPassword;
+
+        try {
+            await this.accountService.updatePassword(accountId, newPassword);
+
+            return res.status(HttpStatus.OK).json({
+                statusCode: HttpStatus.OK,
+                message: 'Contraseña actualizada con exito!',
             });
         } catch (error) {
             return next(error);

@@ -9,4 +9,5 @@ export interface IAccountService {
     deleteAccount(accountId: string): Promise<UpdateResult>;
     recoverDeletedAccount(email: string): Promise<UpdateResult>;
     updateEmail(accountId: string, newEmail: string): Promise<UpdateResult>;
+    updatePassword(accountId: string, newPassword: string): Promise<UpdateResult>;
 }

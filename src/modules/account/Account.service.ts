@@ -75,11 +75,29 @@ export class AccountService extends Singleton implements IAccountService {
         const emailExist: Account | null = await this.findOneByEmail(newEmail);
 
         if (!accountExist) throw new NotFoundException('La cuenta que desea actualizar no existe');
-        if (emailExist) throw new ConflictException('El email ingresado ya se encuentra registrado');
+        if (emailExist) throw new ConflictException('El correo electrónico ingresado ya se encuentra registrado');
         
         return await this.accountRepository.update(
             { id: accountId },
             { email: newEmail }
         );
+    }
+
+    public async updatePassword(accountId: string, newPassword: string): Promise<UpdateResult> {
+        const account: Account | null = await this.findOneById(accountId);
+
+        if (account) {
+            const isSameOldPassword: boolean = await Security.verifyPassword(newPassword, account.password);
+
+            if (isSameOldPassword) throw new ConflictException('La nueva contraseña debe ser distinta a la anterior');
+
+            const hashedNewPassword: string = await Security.hashPassword(newPassword);
+
+            return await this.accountRepository.update({
+                id: accountId,
+            }, { password: hashedNewPassword });
+        } else {
+            throw new NotFoundException('La cuenta no existe');
+        }
     }
 }
