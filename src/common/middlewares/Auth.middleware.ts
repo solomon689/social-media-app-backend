@@ -14,10 +14,9 @@ export class AuthMiddleware {
 
             if (userId) req.body.userId = userId;
             
+            return next();
         } catch (error) {
             return next(error);
         }
-
-        return next();
     }
 }

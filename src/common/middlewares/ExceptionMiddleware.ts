@@ -7,6 +7,7 @@ export class ExceptionMiddleware {
 
     public errorLogger(error: Error, req: Request, res: Response, next: NextFunction) {
         console.log(`error ${ error.message }`);
+        console.log(`${ error.stack }`);
         return next(error);
     }
 
@@ -17,5 +18,7 @@ export class ExceptionMiddleware {
             statusCode: status,
             message: error.message,
         });
+
+        return next();
     }
 }

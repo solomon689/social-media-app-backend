@@ -8,6 +8,7 @@ export class AuthController {
         private readonly authService: IAuthService,
     ) {
         this.login = this.login.bind(this);
+        this.logout = this.logout.bind(this);
     }
 
     public async login(req: Request, res: Response, next: NextFunction) {
@@ -28,6 +29,19 @@ export class AuthController {
             });
         } catch (error) {
             return next(error);  
+        }
+    }
+
+    public async logout(req: Request, res: Response, next: NextFunction) {
+        try {
+            res.clearCookie('token');
+
+            return res.status(HttpStatus.OK).json({
+                statusCode: HttpStatus.OK,
+                message: 'Sesión cerrada con exito!',
+            });
+        } catch (error) {
+            return next(error);
         }
     }
 }
