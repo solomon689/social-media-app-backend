@@ -7,11 +7,15 @@ import { Database } from '../../config/Database';
 import { UploadedFile } from 'express-fileupload';
 import { Cloudinary } from '../../utils/Cloudinary';
 import { UserPostImage } from './entities/UserPostImage.entity';
+import { User } from '../user/User.entity';
+import { IUserService } from '../../common/interfaces/services/IUserService.interface';
+import { UserService } from '../user/User.service';
 
 export class UserPostService extends Singleton implements IUserPostService {
     private constructor(
         private readonly userPostRepository: Repository<UserPost>,
         private readonly userPostImageRepository: Repository<UserPostImage>,
+        private readonly userService: IUserService,
     ) {
         super();
     }
@@ -20,15 +24,22 @@ export class UserPostService extends Singleton implements IUserPostService {
         if (!UserPostService.instance) {
             UserPostService.instance = new UserPostService(
                 Database.getInstance().DataSource.getRepository(UserPost),
-                Database.getInstance().DataSource.getRepository(UserPostImage)
+                Database.getInstance().DataSource.getRepository(UserPostImage),
+                UserService.getInstance(),
             );
         }
 
         return UserPostService.instance;
     }
 
-    public async create(post: CreateUserPostDto): Promise<UserPost> {
-        const userPost: UserPost = new UserPost(post.description);
+    public async create(post: CreateUserPostDto, userId: string): Promise<UserPost> {
+        const user: User | null = await this.userService.findOneById(userId);
+
+        const userPost: UserPost = {
+            description: post.description,
+            user: user as User,
+            images: [],
+        }
         const newPost: UserPost = await this.userPostRepository.save(userPost);
         const postImages: UserPostImage[] = [];
 
@@ -50,7 +61,7 @@ export class UserPostService extends Singleton implements IUserPostService {
 
     public async savePostImage(photo: UploadedFile, identifier?: string): Promise<string> {
         if (photo) {
-            const postImageUrl: string = await Cloudinary.uploadPostImage(photo);
+            const postImageUrl: string = await Cloudinary.uploadPostImage(photo, identifier);
 
             return postImageUrl;
         }

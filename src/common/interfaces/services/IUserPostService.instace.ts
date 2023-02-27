@@ -3,7 +3,7 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 import { UploadedFile } from 'express-fileupload';
 
 export interface IUserPostService {
-    create(post: any): Promise<UserPost>;
+    create(post: any, userId: string): Promise<UserPost>;
     savePostImage(photo: UploadedFile): Promise<string>;
     deletePostById(postId: string): Promise<DeleteResult>;
     findPosts(): Promise<UserPost>;

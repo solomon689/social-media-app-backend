@@ -15,15 +15,21 @@ export class UserPostController {
         if (!req.body.data) throw new BadRequestException("Debe ingresar la información del post");
 
         const body: any = JSON.parse(req.body.data);
+        const userId: string = body.userId;
         const createUserPostDto: CreateUserPostDto = {
             description: body.description,
             photos: req.files?.photos as UploadedFile[],
         }
-        const newPost: UserPost = await this.userPostService.create(createUserPostDto);
 
-        return res.status(HttpStatus.OK).json({
-            statusCode: HttpStatus.OK,
-            message: 'Post creado con exito!',
-        });
+        try {
+            const newPost: UserPost = await this.userPostService.create(createUserPostDto, userId);
+            
+            return res.status(HttpStatus.OK).json({
+                statusCode: HttpStatus.OK,
+                message: 'Post creado con exito!',
+            });   
+        } catch (error) {
+            return next(error);
+        }
     }
 }
