@@ -26,12 +26,17 @@ export class UserProfileService extends Singleton implements IUserProfileService
         }
     }
 
-    public async create(profileInfo: { biography?: string, avatarImage?: UploadedFile, coverImage?: UploadedFile }): Promise<UserProfile | null> {
+    public async create(profileInfo: { 
+        userId: string,
+        biography?: string, 
+        avatarImage?: UploadedFile, 
+        coverImage?: UploadedFile 
+    }): Promise<UserProfile | null> {
         let avatarImageUrl: string | undefined = undefined;
         let coverImageUrl: string | undefined = undefined;
 
-        if (profileInfo.avatarImage) avatarImageUrl = await Cloudinary.uploadAvatarImage(profileInfo.avatarImage, 'bastian');
-        if (profileInfo.coverImage) coverImageUrl = await Cloudinary.uploadCoverImage(profileInfo.coverImage, 'bastian');
+        if (profileInfo.avatarImage) avatarImageUrl = await Cloudinary.uploadAvatarImage(profileInfo.avatarImage, profileInfo.userId);
+        if (profileInfo.coverImage) coverImageUrl = await Cloudinary.uploadCoverImage(profileInfo.coverImage, profileInfo.userId);
 
         if (avatarImageUrl || coverImageUrl || profileInfo.biography) {
             const createdProfile: UserProfile = await this.userProfileRepository.save({

@@ -13,20 +13,21 @@ export class UserProfileController {
     public async createProfile(req: Request, res: Response, next: NextFunction) {
         const userId: string = req.query.userId as string;
     
-        // if (!req.files || Object.keys(req.files).length === 0) {
-        //     return res.status(400).send('No files were uploaded.');
-        // }
-        
+        if (!req.files || Object.keys(req.files).length === 0) {
+            return res.status(400).send('No files were uploaded.');
+        }
+
+        const body = req.body.data;
         const avatarImage: UploadedFile = req.files?.avatar as UploadedFile;
         const coverImage: UploadedFile = req.files?.avatar as UploadedFile;
 
         try {
-            const createdProfile = await this.userProfileService.create({ biography: req.body.biography, avatarImage, coverImage });
+            // const createdProfile = await this.userProfileService.create({ biography: req.body.biography, avatarImage, coverImage });
 
-            if (createdProfile) return res.status(HttpStatus.CREATED).json({
+            if (true) return res.status(HttpStatus.CREATED).json({
                 statusCode: HttpStatus.CREATED,
                 message: 'Perfil creado con exito!',
-                data: createdProfile,
+                // data: createdProfile,
             });
         } catch (error) {
             return next(error);

@@ -9,6 +9,7 @@ import { Singleton } from '../../common/models/Singleton';
 import { IAccountService } from '../../common/interfaces/services/IAccountService.interface';
 import { UserMapper } from '../../mapers/UserMapper';
 import { NotFoundException } from '../../errors/NotFoundException';
+import { UserProfile } from '../user-profile/UserProfile.entity';
 
 export class UserService extends Singleton implements IUserService {
     private constructor(
@@ -31,13 +32,13 @@ export class UserService extends Singleton implements IUserService {
         }
     }
 
-    public async create(user: CreateUserDto): Promise<void> {
+    public async create(user: CreateUserDto): Promise<User> {
         const newUser: User = UserMapper.createUserDtoToUserEntity(user);
         const newAccount: Account = await this.accountService.create(user.accountInfo);
 
         newUser.account = newAccount;
 
-        await this.userRepository.save(newUser);
+        return await this.userRepository.save(newUser);
     }
 
     public async findOneByEmail(email: string): Promise<User | null> {
@@ -70,6 +71,9 @@ export class UserService extends Singleton implements IUserService {
         user.lastname = newUserData.lastname as string;
         user.account.phoneNumber = newUserData.account?.phoneNumber;
         user.account.prefix = newUserData.account?.prefix;
+
+        if (newUserData.profile)
+            user.profile = newUserData.profile;
 
         return await this.userRepository.save(user);
     }

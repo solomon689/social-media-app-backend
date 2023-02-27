@@ -8,7 +8,7 @@ export class ValidationMiddleware {
     constructor() { }
 
     public validateEmail(req: Request, res: Response, next: NextFunction) {
-        const body: CreateUserDto = req.body;
+        const body: CreateUserDto = JSON.parse(req.body.data);
         const email: string = body.accountInfo.email;
 
         if (!email) throw new BadRequestException("Debe ingresar un correo electrónico");
@@ -21,7 +21,7 @@ export class ValidationMiddleware {
     }
 
     public validatePassword(req: Request, res: Response, next: NextFunction) {
-        const body: CreateUserDto = req.body;
+        const body: CreateUserDto = JSON.parse(req.body.data);
         const password: string = body.accountInfo.password;
 
         if (!password) throw new BadRequestException("Debe ingresar una contraseña");

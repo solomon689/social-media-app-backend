@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { id } from "../../../jest.config";
 import { HttpStatus } from '../../common/enums/HttpStatus';
 import { IUserService } from '../../common/interfaces/services/IUserService.interface';
 import { CreateUserDto } from './dtos/CreateUserDto';
@@ -8,10 +7,15 @@ import { UserDto } from './dtos/UserDto';
 import { NotFoundException } from '../../errors/NotFoundException';
 import { BadRequestException } from '../../errors/BadRequestException';
 import { UserMapper } from '../../mapers/UserMapper';
+import { UploadedFile } from 'express-fileupload';
+import { IUserProfileService } from '../../common/interfaces/services/IUserProfileService.interface';
+import { UserProfile } from '../user-profile/UserProfile.entity';
+import { InternalServerErrorException } from '../../errors/InternalServerErrorException';
 
 export class UserController {
     constructor(
         private readonly userService: IUserService,
+        private readonly userProfileService: IUserProfileService,
     ) {
         this.registerUser = this.registerUser.bind(this);
         this.getUserData = this.getUserData.bind(this);
@@ -19,12 +23,26 @@ export class UserController {
     }
 
     public async registerUser(req: Request, res: Response, next: NextFunction) {
-        if (!req.body) throw new BadRequestException('Debe ingresar la información del usuario');
+        if (!req.body.data) throw new BadRequestException('Debe ingresar la información del usuario');
 
-        const body: CreateUserDto = req.body;
-        
+        const body: CreateUserDto = JSON.parse(req.body.data);
+        const avatarImage: UploadedFile = req.files?.avatar as UploadedFile;
+        const coverImage: UploadedFile = req.files?.coverImage as UploadedFile;
+
         try {
-            await this.userService.create(body);
+            const newUser: User = await this.userService.create(body);
+
+            if (!newUser) throw new InternalServerErrorException('Ha ocurrido un error inesperado al momento de la creación');
+
+            const newProfile: UserProfile | null = await this.userProfileService.create({
+                avatarImage,
+                coverImage,
+                userId: newUser.id as string,
+            });
+
+            if (newProfile) {
+                await this.userService.updateById(newUser.id as string, { profile: newProfile });
+            }
 
             return res.status(HttpStatus.CREATED).json({
                 statusCode: HttpStatus.CREATED,
