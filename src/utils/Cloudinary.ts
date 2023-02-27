@@ -39,4 +39,21 @@ export namespace Cloudinary {
 
         return secure_url;
     }
+
+    export const uploadPostImage = async (postImage: UploadedFile, identifier?: string): Promise<string> => {
+        if (!postImage) throw new BadRequestException('Debe subir una imagen para su subida');
+
+        const { secure_url } = await cloudinary.v2.uploader.upload(postImage.tempFilePath, {
+            public_id: identifier,
+            folder: 'posts/' + identifier,
+            responsive_breakpoints: {
+                create_derived: true,
+                bytes_step: 10000,
+                min_width: 800,
+                max_width: 1600
+            },
+        });
+
+        return secure_url;
+    }
 }

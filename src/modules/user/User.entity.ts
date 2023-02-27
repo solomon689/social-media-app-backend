@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { UserProfile } from '../user-profile/UserProfile.entity';
 import { Account } from '../account/Account.entity';
+import { UserPost } from '../user-post/entities/UserPost.entity';
 
 @Entity('user')
 export class User {
@@ -20,6 +21,9 @@ export class User {
     @OneToOne(() => Account, { cascade: true, eager: true })
     @JoinColumn()
     public account!: Account;
+
+    @OneToMany(() => UserPost, (post) => post.user)
+    public posts!: UserPost[];
 
     constructor(user: User) {
         Object.assign(this, user);

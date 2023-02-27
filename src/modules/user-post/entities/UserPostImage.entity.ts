@@ -12,7 +12,7 @@ export class UserPostImage {
     @ManyToOne(() => UserPost, (userPost) => userPost.images)
     public userPost!: UserPost;
 
-    constructor(url: string) {
+    constructor(url: string) {        
         this.url = url;
     }
 }

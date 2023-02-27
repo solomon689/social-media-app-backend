@@ -6,6 +6,7 @@ import userRoutes from "../routes/user.routes";
 import authRoutes from "../routes/auth.routes";
 import userProfileRoutes from "../routes/userProfile.routes";
 import accountRoutes from "../routes/account.routes";
+import userPostRoutes from "../routes/userPost.routes";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { ExceptionMiddleware } from '../common/middlewares/ExceptionMiddleware';
@@ -19,6 +20,7 @@ export class ServerApp {
         auth: '/api/v1/auth',
         userProfile: '/api/v1/user/profile',
         account: '/api/v1/account',
+        userPost: '/api/v1/user/post',
     }
 
     constructor() {
@@ -38,6 +40,7 @@ export class ServerApp {
         this.app.use(this.paths.user, userRoutes);
         this.app.use(this.paths.auth, authRoutes);
         this.app.use(this.paths.userProfile, userProfileRoutes);
+        this.app.use(this.paths.userPost, userPostRoutes);
         this.app.use(this.paths.account, accountRoutes);
         this.app.use(this.exceptionHandler.errorLogger);
         this.app.use(this.exceptionHandler.errorResponse);

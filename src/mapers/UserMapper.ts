@@ -16,6 +16,7 @@ export class UserMapper {
             lastname: userDto.lastname,
             account: mappedAccount,
             profile: userDto.profile,
+            posts: [],
         });
     }
 
