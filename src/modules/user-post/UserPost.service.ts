@@ -1,6 +1,6 @@
 import { Singleton } from '../../common/models/Singleton';
 import { IUserPostService } from '../../common/interfaces/services/IUserPostService.instace';
-import { UpdateResult, DeleteResult, Repository, InsertResult } from 'typeorm';
+import { UpdateResult, DeleteResult, Repository } from 'typeorm';
 import { UserPost } from './entities/UserPost.entity';
 import { CreateUserPostDto } from '../user-post/dtos/CreateUserPost.dto';
 import { Database } from '../../config/Database';
