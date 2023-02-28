@@ -6,10 +6,12 @@ import { BadRequestException } from '../../errors/BadRequestException';
 import { UserPost } from './entities/UserPost.entity';
 import { HttpStatus } from '../../common/enums/HttpStatus';
 import { UnauthorizeException } from '../../errors/UnauthorizeException';
+import { UpdateResult } from 'typeorm';
 
 export class UserPostController {
     constructor(private readonly userPostService: IUserPostService) {
         this.createPost = this.createPost.bind(this);
+        this.editPost = this.editPost.bind(this);
     }
 
     public async createPost(req: Request, res: Response, next: NextFunction) {
@@ -32,6 +34,29 @@ export class UserPostController {
                 statusCode: HttpStatus.OK,
                 message: 'Post creado con exito!'
             });   
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    public async editPost(req: Request, res: Response, next: NextFunction) {
+        try {
+            const body: Partial<UserPost> = req.body;
+            const postId: string = req.params.postId;
+            const updatedPost: UpdateResult = await this.userPostService.updateById(postId, body);
+
+            return res.status(HttpStatus.OK).json({
+                statusCode: HttpStatus.OK,
+                message: 'Post actualizado con exito!',
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    public async deletePost(req: Request, res: Response, next: NextFunction) {
+        try {
+            
         } catch (error) {
             return next(error);
         }

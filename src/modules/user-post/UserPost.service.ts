@@ -10,6 +10,8 @@ import { UserPostImage } from './entities/UserPostImage.entity';
 import { User } from '../user/User.entity';
 import { IUserService } from '../../common/interfaces/services/IUserService.interface';
 import { UserService } from '../user/User.service';
+import { BadRequestException } from '../../errors/BadRequestException';
+import { NotFoundException } from '../../errors/NotFoundException';
 
 export class UserPostService extends Singleton implements IUserPostService {
     private constructor(
@@ -69,23 +71,39 @@ export class UserPostService extends Singleton implements IUserPostService {
         return "";
     }
 
-    public async updateById(postId: string, newData: any): Promise<UpdateResult> {
+    public async updateById(postId: string, newData: Partial<UserPost>): Promise<UpdateResult> {
+        const post: UserPost | null = await this.findPostById(postId);
+
+        if (!post) throw new NotFoundException('El post que se desea actualizar no existe');
+
+        return await this.userPostRepository
+            .createQueryBuilder()
+            .update(UserPost)
+            .set({ description: newData.description })
+            .where('id = :id', { id: postId })
+            .execute();
+    }
+
+    public async deletePostById(postId: string): Promise<DeleteResult> {
+        return await this.userPostRepository.delete({ id: postId });
+    }
+
+    public async findUserPosts(userId: string): Promise<UserPost[]> {
         throw new Error('Method not implemented.');
     }
 
-    public deletePostById(postId: string): Promise<DeleteResult> {
-        throw new Error('Method not implemented.');
-    }
-
-    public findUserPosts(userId: string): Promise<UserPost[]> {
-        throw new Error('Method not implemented.');
-    }
-
-    public findUserPost(userId: string): Promise<UserPost> {
+    public async findUserPost(userId: string): Promise<UserPost> {
         throw new Error('Method not implemented.');
     }
     
-    public findPosts(): Promise<UserPost> {
+    public async findPosts(): Promise<UserPost[]> {
         throw new Error('Method not implemented.');
+    }
+
+    public async findPostById(postId: string): Promise<UserPost | null> {
+        return await this.userPostRepository.findOne({
+            where: { id: postId },
+            relations: { images: true }
+        });
     }
 }

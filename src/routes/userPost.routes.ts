@@ -10,7 +10,15 @@ const userPostController: UserPostController = new UserPostController(
 const authMiddleware: AuthMiddleware = new AuthMiddleware();
 
 router.post('/',
-authMiddleware.verifyUserSession
+    authMiddleware.verifyUserSession
 , userPostController.createPost);
+
+router.put('/:postId',
+    authMiddleware.verifyUserSession
+, userPostController.editPost);
+
+router.delete('/:postId',
+    authMiddleware.verifyUserSession
+, );
 
 export default router;

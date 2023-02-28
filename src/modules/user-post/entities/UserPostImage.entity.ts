@@ -9,7 +9,7 @@ export class UserPostImage {
     @Column({ type: 'varchar', length: 255 })
     public url!: string;
 
-    @ManyToOne(() => UserPost, (userPost) => userPost.images)
+    @ManyToOne(() => UserPost, (userPost) => userPost.images, { cascade: ['remove'] })
     public userPost!: UserPost;
 
     constructor(url: string) {        
