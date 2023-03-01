@@ -10,7 +10,6 @@ import { UserPostImage } from './entities/UserPostImage.entity';
 import { User } from '../user/User.entity';
 import { IUserService } from '../../common/interfaces/services/IUserService.interface';
 import { UserService } from '../user/User.service';
-import { BadRequestException } from '../../errors/BadRequestException';
 import { NotFoundException } from '../../errors/NotFoundException';
 
 export class UserPostService extends Singleton implements IUserPostService {
@@ -99,8 +98,14 @@ export class UserPostService extends Singleton implements IUserPostService {
         });
     }
 
-    public async findUserPost(userId: string): Promise<UserPost> {
-        throw new Error('Method not implemented.');
+    public async findUserPost(userId: string, postId: string): Promise<UserPost | null> {
+        return await this.userPostRepository.findOne({
+            where: {
+                id: postId, 
+                user: { id: userId },
+            },
+            relations: { images: true }
+        })
     }
     
     public async findPosts(): Promise<UserPost[]> {

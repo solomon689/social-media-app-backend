@@ -25,4 +25,8 @@ router.get('/user-posts',
     authMiddleware.verifyUserSession
 , userPostController.getUserPosts);
 
+router.get('/user-post/:postId',
+    authMiddleware.verifyUserSession
+, userPostController.getUserPost);
+
 export default router;

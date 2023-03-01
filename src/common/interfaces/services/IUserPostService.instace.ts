@@ -9,6 +9,6 @@ export interface IUserPostService {
     findPosts(): Promise<UserPost[]>;
     findPostById(postId: string): Promise<UserPost | null>
     findUserPosts(userId: string): Promise<UserPost[]>;
-    findUserPost(userId: string): Promise<UserPost>;
+    findUserPost(userId: string, postId: string): Promise<UserPost | null>;
     updateById(postId: string, newData: any): Promise<UpdateResult>;
 }

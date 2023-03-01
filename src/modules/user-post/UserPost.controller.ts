@@ -7,6 +7,7 @@ import { UserPost } from './entities/UserPost.entity';
 import { HttpStatus } from '../../common/enums/HttpStatus';
 import { UnauthorizeException } from '../../errors/UnauthorizeException';
 import { UpdateResult } from 'typeorm';
+import { NotFoundException } from '../../errors/NotFoundException';
 
 export class UserPostController {
     constructor(private readonly userPostService: IUserPostService) {
@@ -14,6 +15,7 @@ export class UserPostController {
         this.editPost = this.editPost.bind(this);
         this.deletePost = this.deletePost.bind(this);
         this.getUserPosts = this.getUserPosts.bind(this);
+        this.getUserPost = this.getUserPost.bind(this);
     }
 
     public async createPost(req: Request, res: Response, next: NextFunction) {
@@ -82,6 +84,24 @@ export class UserPostController {
                 statusCode: HttpStatus.OK,
                 message: 'Información obtenida con exito!',
                 data: posts,
+            });
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    public async getUserPost(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId: string = req.body.userId;
+            const postId: string = req.params.postId;
+            const post: UserPost | null = await this.userPostService.findUserPost(userId, postId);
+
+            if (!post) throw new NotFoundException('El post no existe');
+
+            return res.status(HttpStatus.OK).json({
+                statusCode: HttpStatus.OK,
+                message: 'Información obtenida con exita!',
+                data: post,
             });
         } catch (error) {
             return next(error);
