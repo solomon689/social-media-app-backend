@@ -12,6 +12,7 @@ export class UserPostController {
     constructor(private readonly userPostService: IUserPostService) {
         this.createPost = this.createPost.bind(this);
         this.editPost = this.editPost.bind(this);
+        this.deletePost = this.deletePost.bind(this);
     }
 
     public async createPost(req: Request, res: Response, next: NextFunction) {
@@ -56,7 +57,16 @@ export class UserPostController {
 
     public async deletePost(req: Request, res: Response, next: NextFunction) {
         try {
-            
+            const postId: string = req.params.id;
+
+            if (!postId) throw new BadRequestException('Debe ingresar el id del post a eliminar');
+
+            await this.userPostService.deletePostById(postId);
+
+            return res.status(HttpStatus.OK).json({
+                statusCode: HttpStatus.OK,
+                message: 'Post eliminado con exito!',
+            })
         } catch (error) {
             return next(error);
         }

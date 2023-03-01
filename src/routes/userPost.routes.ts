@@ -17,8 +17,8 @@ router.put('/:postId',
     authMiddleware.verifyUserSession
 , userPostController.editPost);
 
-router.delete('/:postId',
+router.delete('/delete/:id',
     authMiddleware.verifyUserSession
-, );
+, userPostController.deletePost);
 
 export default router;

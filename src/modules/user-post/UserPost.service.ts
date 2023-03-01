@@ -85,6 +85,10 @@ export class UserPostService extends Singleton implements IUserPostService {
     }
 
     public async deletePostById(postId: string): Promise<DeleteResult> {
+        const post: UserPost | null = await this.findPostById(postId);
+
+        if (!post) throw new NotFoundException('El post que desea eliminar no existe');
+
         return await this.userPostRepository.delete({ id: postId });
     }
 
