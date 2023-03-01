@@ -11,6 +11,7 @@ import { UploadedFile } from 'express-fileupload';
 import { IUserProfileService } from '../../common/interfaces/services/IUserProfileService.interface';
 import { UserProfile } from '../user-profile/UserProfile.entity';
 import { InternalServerErrorException } from '../../errors/InternalServerErrorException';
+import { UserPost } from '../user-post/entities/UserPost.entity';
 
 export class UserController {
     constructor(

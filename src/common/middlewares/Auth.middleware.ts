@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Security } from '../../utils/Security';
-import { HttpStatus } from '../enums/HttpStatus';
 import { BadRequestException } from '../../errors/BadRequestException';
+import { UserService } from '../../modules/user/User.service';
 
 export class AuthMiddleware {
     constructor() { }
@@ -11,8 +11,10 @@ export class AuthMiddleware {
 
         try {
             const userId = Security.validateUserToken(req.cookies.token);
-
-            if (userId) req.body.userId = userId;
+            
+            if (userId) {
+                
+            } req.body.userId = userId;
             
             return next();
         } catch (error) {

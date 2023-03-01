@@ -93,7 +93,10 @@ export class UserPostService extends Singleton implements IUserPostService {
     }
 
     public async findUserPosts(userId: string): Promise<UserPost[]> {
-        throw new Error('Method not implemented.');
+        return await this.userPostRepository.find({
+            where: { user: { id: userId } },
+            relations: { images: true }
+        });
     }
 
     public async findUserPost(userId: string): Promise<UserPost> {

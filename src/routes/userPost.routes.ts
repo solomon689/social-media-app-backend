@@ -21,4 +21,8 @@ router.delete('/delete/:id',
     authMiddleware.verifyUserSession
 , userPostController.deletePost);
 
+router.get('/user-posts', 
+    authMiddleware.verifyUserSession
+, userPostController.getUserPosts);
+
 export default router;

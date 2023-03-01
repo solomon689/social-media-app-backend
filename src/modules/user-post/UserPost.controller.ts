@@ -13,6 +13,7 @@ export class UserPostController {
         this.createPost = this.createPost.bind(this);
         this.editPost = this.editPost.bind(this);
         this.deletePost = this.deletePost.bind(this);
+        this.getUserPosts = this.getUserPosts.bind(this);
     }
 
     public async createPost(req: Request, res: Response, next: NextFunction) {
@@ -67,6 +68,21 @@ export class UserPostController {
                 statusCode: HttpStatus.OK,
                 message: 'Post eliminado con exito!',
             })
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    public async getUserPosts(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId: string = req.body.userId;
+            const posts: UserPost[] = await this.userPostService.findUserPosts(userId);
+
+            return res.status(HttpStatus.OK).json({
+                statusCode: HttpStatus.OK,
+                message: 'Información obtenida con exito!',
+                data: posts,
+            });
         } catch (error) {
             return next(error);
         }
