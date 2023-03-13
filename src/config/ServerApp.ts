@@ -10,6 +10,8 @@ import userPostRoutes from "../routes/userPost.routes";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { ExceptionMiddleware } from '../common/middlewares/ExceptionMiddleware';
+import swaggerUi from "swagger-ui-express";
+import swaggerSetup from "../docs/swagger";
 
 export class ServerApp {
     private app: Application;
@@ -42,6 +44,7 @@ export class ServerApp {
         this.app.use(this.paths.userProfile, userProfileRoutes);
         this.app.use(this.paths.userPost, userPostRoutes);
         this.app.use(this.paths.account, accountRoutes);
+        this.app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSetup));
         this.app.use(this.exceptionHandler.errorLogger);
         this.app.use(this.exceptionHandler.errorResponse);
     }

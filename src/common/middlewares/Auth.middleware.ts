@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Security } from '../../utils/Security';
 import { BadRequestException } from '../../errors/BadRequestException';
-import { UserService } from '../../modules/user/User.service';
 
 export class AuthMiddleware {
     constructor() { }
